@@ -36,13 +36,9 @@ namespace sti3_api.Application.Services
                                                                     .Where(o => o.Status == Status.Pending)
                                                                     .ToListAsync(ct);
 
-                    Console.WriteLine("Quantidade na Lista -> " + pendingOrders.Count);
-
                     foreach(var order in pendingOrders)
                     {
                         var isSended = await billingService.SendToBillingAsync(order, ct);
-                        Console.WriteLine("Requisição Order ====== " + order.OrderId);
-                        Console.WriteLine("Requisição Order Status ====== " + order.Status);
 
                         if (isSended) {
                             order.Status = Status.Completed;
@@ -54,10 +50,10 @@ namespace sti3_api.Application.Services
                                 await updateDbContext.SaveChangesAsync(ct);
                             }
 
-                            Console.WriteLine($"Pedido {order.OrderId} enviado e atualizado!");
+                            Console.WriteLine($"Order {order.OrderId} sended and updated!");
                         }
                         else {
-                            Console.WriteLine($"Falha ao enviar pedido {order.OrderId}");
+                            Console.WriteLine($"Fail to sendo Order {order.OrderId}");
                         }
                     }
                 }

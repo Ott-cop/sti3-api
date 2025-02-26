@@ -22,6 +22,12 @@ namespace sti3_api.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] OrderDTO req, CancellationToken ct)
         {
+            var verifyorder = await _dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderId == req.OrderId, ct);
+
+            if (verifyorder != null) {
+                return Conflict("Already exists Order with this ID");
+            }
+
             try
             {
                 var order = _mapper.Map<OrderDTO>(await _orderService.CreateOrderAsync(req, ct));
