@@ -6,6 +6,7 @@ using sti3_api.Application.DTOs.Order;
 using sti3_api.Application.DTOs.Product;
 using sti3_api.Application.Services;
 using sti3_api.Domain.Entities;
+using sti3_api.Domain.Entities.Enums;
 using sti3_api.Infrastructure;
 
 namespace sti3_api.API.Controllers
@@ -92,6 +93,10 @@ namespace sti3_api.API.Controllers
                 return NotFound();
             }
 
+            if (order.Status == Status.Completed) {
+                return Conflict("The order has already been completed and cannot be modified.");
+            }
+
             var product = order.OrderProducts!.FirstOrDefault(i => i.ProductId == product_id);
 
             if (product == null) {
@@ -134,6 +139,10 @@ namespace sti3_api.API.Controllers
 
             if (order == null) {
                 return NotFound();
+            }
+
+            if (order.Status == Status.Completed) {
+                return Conflict("The order has already been completed and cannot be modified.");
             }
 
             var find_product = await _dbContext.Products.AsNoTracking().FirstOrDefaultAsync(p => p.ProductId == product_id, ct);
@@ -192,6 +201,10 @@ namespace sti3_api.API.Controllers
 
             if (order == null) {
                 return NotFound();
+            }
+
+            if (order.Status == Status.Completed) {
+                return Conflict("The order has already been completed and cannot be modified.");
             }
 
             var product = await _dbContext.Products.AsNoTracking().FirstOrDefaultAsync(i => i.ProductId == product_id, ct);
